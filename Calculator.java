@@ -287,9 +287,15 @@ public class Calculator extends JFrame implements ActionListener{
         if(ae.getSource() == button[18]){
             temporary[0] = Integer.parseInt(display.getText());
             BigInteger val = getFactorial((int)temporary[0]);
+            BigInteger max = new BigInteger(Integer.MAX_VALUE + "");
 
-            NumberFormat formatter = new DecimalFormat("0.##########E0");
-            display.setText(formatter.format(val));
+            if( val.compareTo(max) > 0 ){
+                NumberFormat formatter = new DecimalFormat("0.##########E0");
+                display.setText(formatter.format(val));
+            } else {
+                display.setText(String.valueOf(val));
+            }
+            
         }
         if(ae.getSource() == button[19]){
             //nPr
