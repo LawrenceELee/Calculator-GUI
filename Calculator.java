@@ -13,8 +13,8 @@ public class Calculator extends JFrame implements ActionListener{
     /*button[0]=="acos", button[length-1]=="="*/
     String[] buttonString = {   "acos", "asin", "atan", "Del", "Clr",
                                 "cos", "sin", "tan", "e^x", "ln",
-                                "x^y", "xroot", "10^x", "log", " ",
-                                "7", "8", "9", "x!", " ",
+                                "y^x", "xroot", "10^x", "log", "mod",
+                                "7", "8", "9", "x!", "1/x",
                                 "4", "5", "6", "*", "/",
                                 "1", "2", "3", "+", "-",
                                 "0", ".", "+/-", "pi", "="  };
@@ -124,6 +124,8 @@ public class Calculator extends JFrame implements ActionListener{
                 temporary[i] = 0;    /*sets operand vars to 0*/
             }
         } catch(NullPointerException e) {
+            clear();
+            display.setText("Error");
         }
     }
 
@@ -132,7 +134,10 @@ public class Calculator extends JFrame implements ActionListener{
             String val = display.getText(); //just need length
             int len = val.length();
             display.replaceRange("", len-1, len);
+            temporary[0] = Double.parseDouble(display.getText());
         } catch (Exception e) {
+            clear();
+            display.setText("Error");
         }
     }
 
@@ -145,43 +150,30 @@ public class Calculator extends JFrame implements ActionListener{
         }
         return ans;
     }
-    
-    public void getPosNeg() {
-        try {
-            double value = Double.parseDouble(display.getText());
-            if(value != 0) {
-                value = value * (-1);
-                display.setText(Double.toString(value));
-            }
-            else {
-            }
-        } catch(NumberFormatException e) {
-        }
-    }
 
-    public void getResult(){
+    public void getResult() {
         double result = 0;
         temporary[1] = Double.parseDouble(display.getText());
 
-        String tmp0 = Double.toString(temporary[0]);
-        String tmp1 = Double.toString(temporary[1]);
-        try{
-            if(tmp0.contains("-")){
-                String[] tmp00 = tmp0.split("-", 2); /*split neg nums into 2 strings*/
-                temporary[0] = (Double.parseDouble(tmp00[1]) * -1);
+        String temp0 = Double.toString(temporary[0]);
+        String temp1 = Double.toString(temporary[1]);
+        try {
+            if(temp0.contains("-")) {
+                String[] temp00 = temp0.split("-", 2);
+                temporary[0] = (Double.parseDouble(temp00[1]) * -1);
             }
-            if(tmp1.contains("-")){
-                String[] tmp11 = tmp1.split("-", 2); /*split neg nums into 2 strings*/
-                temporary[1] = (Double.parseDouble(tmp11[1]) * -1);
+            if(temp1.contains("-")) {
+                String[] temp11 = temp1.split("-", 2);
+                temporary[1] = (Double.parseDouble(temp11[1]) * -1);
             }
         } catch( ArrayIndexOutOfBoundsException e ){
+            clear();
+            display.setText("Error");
         }
 
         /*order is Parenthsis, Exponent, Mul, Div, Add, Sub*/
         try{
-            if ( function.equals("acos") )
-                result = Math.acos(temporary[0]);
-            else if( function.equals("x^y") )
+            if( function.equals("y^x") )
                 result = Math.pow(temporary[0], temporary[1]);
             else if( function.equals("xroot") )
                 result = Math.pow(temporary[0], 1.0/temporary[1]);
@@ -193,6 +185,8 @@ public class Calculator extends JFrame implements ActionListener{
                 result = temporary[0] * temporary[1];
             else if( function.equals("/") )
                 result = temporary[0] / temporary[1];
+            else if( function.equals("%") )
+                result = temporary[0] % temporary[1];
             else if( function.equals("+") )
                 result = temporary[0] + temporary[1];
             else if( function.equals("-") )
@@ -200,80 +194,91 @@ public class Calculator extends JFrame implements ActionListener{
 
             display.setText(Double.toString(result));
         } catch( Exception e ){
+            clear();
+            display.setText("Error");
         }
     }
 
     @Override
     public void actionPerformed(ActionEvent ae){
-        if(ae.getSource() == button[0]){
+        if(ae.getSource() == button[0]){ //acos unary operator
             temporary[0] = Double.parseDouble(display.getText());
             double val = Math.acos(temporary[0]);
+            clear();
             display.setText(String.valueOf(val));
         }
-        if(ae.getSource() == button[1]){
+        if(ae.getSource() == button[1]){ //asin unary operator
             temporary[0] = Double.parseDouble(display.getText());
             double val = Math.asin(temporary[0]);
+            clear();
             display.setText(String.valueOf(val));
         }
-        if(ae.getSource() == button[2]){
+        if(ae.getSource() == button[2]){ //atan unary operator
             temporary[0] = Double.parseDouble(display.getText());
             double val = Math.atan(temporary[0]);
+            clear();
             display.setText(String.valueOf(val));
         }
-        if(ae.getSource() == button[3]){
+        if(ae.getSource() == button[3]){ //del unary operator
             del();
         }
-        if(ae.getSource() == button[4]){
+        if(ae.getSource() == button[4]){ //clr unary operator
             clear();
         }
-        if(ae.getSource() == button[5]){
+        if(ae.getSource() == button[5]){ //cos unary operator
             temporary[0] = Double.parseDouble(display.getText());
             double val = Math.cos(temporary[0]);
+            clear();
             display.setText(String.valueOf(val));
         }
-        if(ae.getSource() == button[6]){
+        if(ae.getSource() == button[6]){ //sin unary operator
             temporary[0] = Double.parseDouble(display.getText());
             double val = Math.sin(temporary[0]);
+            clear();
             display.setText(String.valueOf(val));
         }
-        if(ae.getSource() == button[7]){
+        if(ae.getSource() == button[7]){ //tan unary operator
             temporary[0] = Double.parseDouble(display.getText());
             double val = Math.tan(temporary[0]);
+            clear();
             display.setText(String.valueOf(val));
         }
-        if(ae.getSource() == button[8]){
+        if(ae.getSource() == button[8]){ //e^x binary operator
             temporary[0] = Double.parseDouble(display.getText());
             double val = Math.pow(Math.E,temporary[0]);
+            clear();
             display.setText(String.valueOf(val));
         }
-        if(ae.getSource() == button[9]){
+        if(ae.getSource() == button[9]){ //ln unary operator
             temporary[0] = Double.parseDouble(display.getText());
             double val = Math.log(temporary[0]);
+            clear();
             display.setText(String.valueOf(val));
         }
-        if(ae.getSource() == button[10]){
+        if(ae.getSource() == button[10]){ //power binary operator
             temporary[0] = Double.parseDouble(display.getText());
-            function = "x^y";
+            function = "y^x";
             display.setText("");
         }
-        if(ae.getSource() == button[11]){
+        if(ae.getSource() == button[11]){ //xth root binary operator
             temporary[0] = Double.parseDouble(display.getText());
             function = "xroot";
             display.setText("");
         }
-        if(ae.getSource() == button[12]){
+        if(ae.getSource() == button[12]){ //exponent unary operator
             temporary[0] = Double.parseDouble(display.getText());
             double val = Math.pow(10.0,temporary[0]);
             display.setText(String.valueOf(val));
         }
-        if(ae.getSource() == button[13]){
+        if(ae.getSource() == button[13]){ //log10 unary op
             temporary[0] = Double.parseDouble(display.getText());
             double val = Math.log10(temporary[0]);
             display.setText(String.valueOf(val));
         }
-        if(ae.getSource() == button[14]){
-            //nCr
-            display.append("0");
+        if(ae.getSource() == button[14]){ //modulo binary op
+            temporary[0] = Double.parseDouble(display.getText());
+            function = "%";
+            display.setText("");
         }
         if(ae.getSource() == button[15]){
             display.append("7");
@@ -284,7 +289,7 @@ public class Calculator extends JFrame implements ActionListener{
         if(ae.getSource() == button[17]){
             display.append("9");
         }
-        if(ae.getSource() == button[18]){
+        if(ae.getSource() == button[18]){ //factorial unary op
             temporary[0] = Integer.parseInt(display.getText());
             BigInteger val = getFactorial((int)temporary[0]);
             BigInteger max = new BigInteger(Integer.MAX_VALUE + "");
@@ -297,9 +302,11 @@ public class Calculator extends JFrame implements ActionListener{
             }
             
         }
-        if(ae.getSource() == button[19]){
-            //nPr
-            display.append("0");
+        if(ae.getSource() == button[19]){ //reciprocal unary op
+            temporary[0] = Double.parseDouble(display.getText());
+            double val = 1.0/temporary[0];
+            clear();
+            display.setText(String.valueOf(val));
         }
         if(ae.getSource() == button[20]){
             display.append("4");
@@ -310,12 +317,12 @@ public class Calculator extends JFrame implements ActionListener{
         if(ae.getSource() == button[22]){
             display.append("6");
         }
-        if(ae.getSource() == button[23]){
+        if(ae.getSource() == button[23]){ //mul binary op
             temporary[0] = Double.parseDouble(display.getText());
             function = "*";
             display.setText("");
         }
-        if(ae.getSource() == button[24]){
+        if(ae.getSource() == button[24]){ //div binary op
             temporary[0] = Double.parseDouble(display.getText());
             function = "/";
             display.setText("");
@@ -329,12 +336,12 @@ public class Calculator extends JFrame implements ActionListener{
         if(ae.getSource() == button[27]){
             display.append("3");
         }
-        if(ae.getSource() == button[28]){ //add
+        if(ae.getSource() == button[28]){ //add binary op
             temporary[0] = Double.parseDouble(display.getText());
             function = "+";
             display.setText("");
         }
-        if(ae.getSource() == button[29]){ //sub
+        if(ae.getSource() == button[29]){ //sub binary op
             temporary[0] = Double.parseDouble(display.getText());
             function = "-";
             display.setText("");
@@ -342,11 +349,20 @@ public class Calculator extends JFrame implements ActionListener{
         if(ae.getSource() == button[30]){
             display.append("0");
         }
-        if(ae.getSource() == button[31]){
+        if(ae.getSource() == button[31]){ //decimal point
             display.append("0.");
         }
-        if(ae.getSource() == button[32]){
-            getPosNeg();
+        if(ae.getSource() == button[32]){ //negation unary op
+            try {
+                temporary[0] = Double.parseDouble(display.getText());
+                if(temporary[0] != 0) {
+                    temporary[0] *= -1.0;
+                    display.setText(String.valueOf(temporary[0]));
+                }
+            } catch(NumberFormatException e) {
+                clear();
+                display.setText("Error");
+            }
         }
         if(ae.getSource() == button[33]){
             display.append(String.valueOf(Math.PI));
