@@ -6,7 +6,7 @@ To run:
 java Calculator
 ```
 
-#####Functions include: addition, subtraction, division, multiplication,
+Functions include: addition, subtraction, division, multiplication,
 x the yth power, xth root of y, base 10 exponentation, log10, base e exp, 
 ln (natural log), cos, sin, tan, acos, asin, atan, factorial, Del and Clr.
 
